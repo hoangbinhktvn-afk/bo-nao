@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bộ não thứ hai</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bộ não 2">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#0b5d63">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{color-scheme:light dark;--bg:#f6f7f7;--card:#fff;--ink:#14181a;--mut:#667378;--line:#dfe4e5;--acc:#0b5d63;--acc2:#e3f1f1;--red:#b3261e;--warn:#9a5b00}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1416;--card:#162023;--ink:#e8eeee;--mut:#8fa0a4;--line:#27353a;--acc:#58c2c9;--acc2:#16343a;--red:#ff8a80;--warn:#f0b35a}}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;overflow-x:clip;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;min-height:40px}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+button.pri{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:600}
+button.ghost{border-color:transparent;background:transparent}
+button.dang{color:var(--red)}
+input[type=text],input[type=password],input[type=search],select,textarea{width:100%;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px}
+a{color:var(--acc)}
+#app{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100%}
+#side{border-right:1px solid var(--line);background:var(--card);padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+#side h1{font-size:19px;margin:0 6px 10px;letter-spacing:-.01em}
+#side h2{font-size:13px;color:var(--mut);margin:14px 6px 4px;font-weight:600}
+.nav{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;border:0;background:transparent;padding:8px 10px;border-radius:8px;min-height:38px}
+.nav:hover{background:var(--acc2)}
+.nav.on{background:var(--acc2);color:var(--acc);font-weight:600}
+.nav small{color:var(--mut);font-weight:400}
+#syncbox{margin-top:auto;padding:10px;border-top:1px solid var(--line);font-size:13px;color:var(--mut)}
+#syncbox button{width:100%;margin-top:6px}
+#main{padding:0 max(16px,env(safe-area-inset-right)) 96px max(16px,env(safe-area-inset-left));max-width:860px;width:100%;margin:0 auto}
+#top{display:flex;align-items:center;gap:8px;padding:calc(12px + env(safe-area-inset-top)) 0 10px;position:sticky;top:0;background:var(--bg);z-index:5}
+#top h2{font-size:22px;margin:0;flex:1;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#menu{display:none}
+#vt:empty{display:none}#vt:empty+#va{flex:1;justify-content:flex-end;flex-wrap:nowrap}#para{width:auto;max-width:150px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.cap{display:flex;gap:8px;margin-bottom:14px}
+.item{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;min-height:0}
+.item b{display:block;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item p{margin:2px 0 6px;color:var(--mut);font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta{font-size:13px;color:var(--mut);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{display:inline-block;background:var(--acc2);color:var(--acc);border-radius:99px;padding:1px 9px;font-size:13px;border:0;min-height:0;text-decoration:none}
+mark{background:#ffe27a;color:#14181a;border-radius:3px}
+.empty{color:var(--mut);text-align:center;padding:40px 10px}
+#ttl{font-size:24px;font-weight:700;border:0;background:transparent;padding:6px 0;border-radius:0}
+#body{min-height:45vh;border:0;background:transparent;padding:6px 0;resize:none;line-height:1.6;border-radius:0;font-size:16px}
+#ttl:focus,#body:focus{outline:0}
+.tb{display:flex;gap:6px;overflow-x:auto;padding:6px 0;border-block:1px solid var(--line);margin:4px 0}
+.tb button{flex:none;min-height:36px;padding:4px 10px;white-space:nowrap;font-size:14px}
+#ac{display:flex;gap:6px;flex-wrap:wrap;padding:4px 0}
+.md{line-height:1.65;min-height:30vh;overflow-wrap:anywhere}
+.md h1{font-size:24px}.md h2{font-size:20px}.md h3,.md h4,.md h5,.md h6{font-size:17px}
+.md h1,.md h2,.md h3,.md h4{margin:18px 0 6px;line-height:1.25}
+.md p{margin:8px 0}
+.md pre{background:var(--card);border:1px solid var(--line);padding:10px;border-radius:8px;overflow-x:auto;font-size:14px}
+.md code{background:var(--acc2);padding:1px 5px;border-radius:5px;font-size:.92em}
+.md pre code{background:none;padding:0}
+.md blockquote{border-left:3px solid var(--acc);margin:8px 0;padding:2px 12px;color:var(--mut)}
+.md .li{display:flex;gap:8px;padding:2px 0}
+.md .li>span:first-child{flex:none;min-width:18px;color:var(--mut)}
+.md .li input{width:18px;height:18px;margin:4px 0 0;accent-color:var(--acc)}
+.md .done{color:var(--mut);text-decoration:line-through}
+.md table{border-collapse:collapse;display:block;overflow-x:auto}
+.md td,.md th{border:1px solid var(--line);padding:5px 9px}
+.md a.wl{text-decoration:none;border-bottom:1px solid var(--acc)}
+.md a.miss{color:var(--warn);border-bottom:1px dashed var(--warn)}
+.sec{margin-top:22px;border-top:1px solid var(--line);padding-top:10px}
+.sec h3{font-size:14px;color:var(--mut);margin:0 0 8px;font-weight:600}
+.task{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px}
+.task input{width:20px;height:20px;margin-top:3px;flex:none;accent-color:var(--acc)}
+.task div{flex:1}
+.task button{border:0;background:none;padding:0;min-height:0;color:var(--mut);font-size:13px;text-align:left}
+.late{color:var(--red);font-weight:600}
+h3.grp{font-size:14px;color:var(--mut);margin:18px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 6px;font-size:17px}
+.card p{margin:4px 0 10px;color:var(--mut);font-size:14px}
+.card label{display:block;font-size:14px;margin:8px 0 3px}
+#graph{width:100%;height:68vh;background:var(--card);border:1px solid var(--line);border-radius:12px;touch-action:none}
+#tabs{display:none}
+#modal,#lock{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+#lock{background:var(--bg)}
+#modal.on,#lock.on{display:flex}
+.dlg{background:var(--card);border-radius:14px;padding:18px;width:min(440px,100%);border:1px solid var(--line);max-height:90vh;overflow:auto}
+.dlg h3{margin:0 0 8px}.dlg p{color:var(--mut);margin:0 0 10px;font-size:14.5px;white-space:pre-line}
+.dlg label{display:block;font-size:14px;margin:8px 0 3px}
+.dlg .row{justify-content:flex-end;margin-top:14px}
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:14px;display:none;z-index:60;max-width:90vw;text-align:center}
+#shade{display:none}
+@media(max-width:820px){
+ #app{grid-template-columns:minmax(0,1fr)}
+ #side{position:fixed;left:0;top:0;bottom:0;width:min(300px,86vw);height:auto;z-index:30;transform:translateX(-105%);transition:transform .2s;padding-top:calc(16px + env(safe-area-inset-top))}
+ body.open #side{transform:none}
+ body.open #shade{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:20}
+ #menu{display:inline-block}body.note #menu,#va [data-act=new]{display:none}#para{max-width:124px}#va button{padding:8px 10px}
+ #tabs{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:10}
+ #tabs button{border:0;background:none;font-size:12.5px;padding:4px 0;min-height:48px;color:var(--mut)}
+ #tabs button.on{color:var(--acc);font-weight:600}
+ #tabs button b{display:block;font-size:20px;line-height:1.1;font-weight:500}
+ #tabs .plus b{background:var(--acc);color:var(--bg);width:40px;height:40px;line-height:38px;border-radius:50%;margin:0 auto;font-size:26px}
+}
+@media(prefers-reduced-motion:reduce){#side{transition:none}}
+</style>
+</head>
+<body>
+<div id="lock"><form class="dlg" id="lockf">
+ <h3>Bộ não thứ hai</h3><p>Dữ liệu đang được khoá. Nhập mật khẩu để mở.</p>
+ <input type="password" id="lockp" autocomplete="current-password" placeholder="Mật khẩu">
+ <p id="lockm" style="color:var(--red);margin-top:8px"></p>
+ <div class="row"><button class="pri">Mở khoá</button></div>
+</form></div>
+
+<div id="app">
+ <aside id="side">
+  <h1>Bộ não thứ hai</h1>
+  <div id="navs"></div>
+  <div id="syncbox"><div id="syncst">Chưa kết nối GitHub</div><button data-act="sync">Đồng bộ ngay</button></div>
+ </aside>
+ <div id="shade" data-act="closemenu"></div>
+ <main id="main">
+  <header id="top"><button id="menu" class="ghost" data-act="menu" aria-label="Mở danh mục">☰</button><h2 id="vt"></h2><div id="va" class="row"></div></header>
+  <section id="view"></section>
+ </main>
+ <nav id="tabs">
+  <button data-go="list/all"><b>▤</b>Ghi chú</button>
+  <button data-act="today"><b>◷</b>Hôm nay</button>
+  <button class="plus" data-act="new" aria-label="Ghi chú mới"><b>+</b></button>
+  <button data-go="tasks"><b>☑</b>Việc</button>
+  <button data-go="search"><b>⌕</b>Tìm</button>
+ </nav>
+</div>
+<div id="modal"></div><div id="toast"></div>
+
+<script>
+{
+'use strict';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const te=new TextEncoder(),td=new TextDecoder();
+const PARA={inbox:'Hộp thư đến',project:'Dự án',area:'Lĩnh vực',resource:'Tài nguyên',archive:'Lưu trữ'};
+const STEPS=[1,3,7,14,30,60,120],DAY=864e5;
+const S={notes:new Map(),key:null,cm:null,gh:null,cur:null,mode:'view',q:'',syncing:false,last:null,err:null};
+
+/* ---------- tiện ích ---------- */
+const nid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const nc=c=>{c=c.toLowerCase();if(c==='đ')return'd';const d=c.normalize('NFD')[0];return d||c};
+const norm=s=>{let o='';for(const c of String(s).normalize('NFC'))o+=nc(c);return o};
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const dmy=t=>{const d=new Date(t);return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear()};
+const ago=t=>{const s=(Date.now()-t)/1e3;if(s<60)return'vừa xong';if(s<3600)return Math.floor(s/60)+' phút trước';if(s<86400)return Math.floor(s/3600)+' giờ trước';if(s<7*86400)return Math.floor(s/86400)+' ngày trước';return dmy(t)};
+const b64e=u=>{let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)};
+const b64d=s=>Uint8Array.from(atob(s.replace(/\s/g,'')),c=>c.charCodeAt(0));
+let toastT;const toast=m=>{const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toastT);toastT=setTimeout(()=>t.style.display='none',3200)};
+
+function dialog({title,text='',fields=[],ok='Đồng ý',cancel='Huỷ',danger=false}){
+ return new Promise(res=>{
+  const m=$('#modal');
+  m.innerHTML=`<form class="dlg"><h3>${esc(title)}</h3>${text?`<p>${esc(text)}</p>`:''}${fields.map(f=>`<label for="f_${f.name}">${esc(f.label)}</label><input id="f_${f.name}" type="${f.type||'text'}" value="${esc(f.value||'')}" placeholder="${esc(f.ph||'')}" autocomplete="off" autocapitalize="off" spellcheck="false">`).join('')}<div class="row">${cancel?`<button type="button" id="dno">${esc(cancel)}</button>`:''}<button class="pri ${danger?'dang':''}">${esc(ok)}</button></div></form>`;
+  m.classList.add('on');
+  const done=v=>{m.classList.remove('on');m.innerHTML='';res(v)};
+  const f=m.querySelector('form');
+  f.onsubmit=e=>{e.preventDefault();const v={};fields.forEach(x=>v[x.name]=f.querySelector('#f_'+x.name).value);done(v)};
+  if(cancel)f.querySelector('#dno').onclick=()=>done(null);
+  const first=f.querySelector('input');if(first)first.focus();
+ });
+}
+
+/* ---------- mã hoá ---------- */
+async function derive(pass,saltB64){
+ const km=await crypto.subtle.importKey('raw',te.encode(pass),'PBKDF2',false,['deriveKey']);
+ return crypto.subtle.deriveKey({name:'PBKDF2',salt:b64d(saltB64),iterations:600000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+async function encS(str,key=S.key){const iv=crypto.getRandomValues(new Uint8Array(12));const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,te.encode(str)));const o=new Uint8Array(12+ct.length);o.set(iv);o.set(ct,12);return b64e(o)}
+async function decS(b,key=S.key){const u=b64d(b);return td.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:u.subarray(0,12)},key,u.subarray(12)))}
+async function newCrypto(pass){const salt=b64e(crypto.getRandomValues(new Uint8Array(16)));const key=await derive(pass,salt);return{key,cm:{salt,verifier:await encS('bonao2-ok',key)}}}
+async function checkPass(pass,cm){try{const key=await derive(pass,cm.salt);return await decS(cm.verifier,key)==='bonao2-ok'?key:null}catch(e){return null}}
+
+/* ---------- lưu trữ IndexedDB ---------- */
+let db;
+const openDB=()=>new Promise((res,rej)=>{const r=indexedDB.open('bonao2',1);r.onupgradeneeded=()=>{r.result.createObjectStore('notes',{keyPath:'id'});r.result.createObjectStore('kv')};r.onsuccess=()=>{db=r.result;res()};r.onerror=()=>rej(r.error)});
+const tx=(st,mode,fn)=>new Promise((res,rej)=>{const t=db.transaction(st,mode);const q=fn(t.objectStore(st));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error)});
+const kvGet=k=>tx('kv','readonly',s=>s.get(k));
+const kvSet=(k,v)=>tx('kv','readwrite',s=>s.put(v,k));
+const plain=n=>({id:n.id,title:n.title,body:n.body,para:n.para,pinned:!!n.pinned,created:n.created,updated:n.updated,step:n.step||0,due:n.due||0,sha:n.sha||null,dirty:!!n.dirty,deleted:!!n.deleted});
+async function putNote(n){const p=plain(n);const rec=S.key?{id:n.id,e:await encS(JSON.stringify(p))}:{id:n.id,p};await tx('notes','readwrite',s=>s.put(rec))}
+const delRec=id=>tx('notes','readwrite',s=>s.delete(id));
+async function loadAll(){const rs=await tx('notes','readonly',s=>s.getAll());S.notes.clear();for(const r of rs){const n=r.e?JSON.parse(await decS(r.e)):r.p;idx(n);S.notes.set(n.id,n)}}
+async function resaveAll(){for(const n of S.notes.values())await putNote(n);await saveGh()}
+async function saveGh(){if(!S.gh){await tx('kv','readwrite',s=>s.delete('gh'));return}const g={owner:S.gh.owner,repo:S.gh.repo};if(S.key)g.te=await encS(S.gh.token);else g.token=S.gh.token;await kvSet('gh',g)}
+async function loadGh(){const g=await kvGet('gh');if(!g){S.gh=null;return}try{S.gh={owner:g.owner,repo:g.repo,token:g.te?await decS(g.te):g.token}}catch(e){S.gh=null}}
+
+/* ---------- mô hình ghi chú ---------- */
+const TAG=/(^|[\s(,;])#([\p{L}][\p{L}\d_\/-]*)/gu, WL=/\[\[([^\]|\n]+)(?:\|([^\]\n]+))?\]\]/g;
+function idx(n){
+ n._tags=[...new Set([...n.body.matchAll(TAG)].map(m=>m[2].toLowerCase()))];
+ n._links=[...new Set([...n.body.matchAll(WL)].map(m=>norm(m[1].trim())))];
+ n._nt=norm(n.title);n._nb=norm(n.body);n._tf=null;dfCache=null;
+}
+const live=()=>[...S.notes.values()].filter(n=>!n.deleted);
+const byTitle=t=>{t=norm(t.trim());return live().find(n=>n._nt===t)};
+async function addNote(o){const now=Date.now();const n={id:nid(),title:'',body:'',para:'inbox',pinned:false,created:now,updated:now,step:0,due:now+DAY,sha:null,dirty:true,deleted:false,...o};idx(n);S.notes.set(n.id,n);await putNote(n);changed();return n}
+async function touch(n){n.updated=Date.now();n.dirty=true;idx(n);await putNote(n);changed()}
+async function removeNote(n){if(n.sha){n.deleted=true;n.dirty=true;n.updated=Date.now();await putNote(n)}else{S.notes.delete(n.id);await delRec(n.id)}changed()}
+let saveT;function saveSoon(n){clearTimeout(saveT);saveT=setTimeout(()=>{saveT=null;touch(n)},500);saveSoon.n=n}
+async function flush(){if(saveT){clearTimeout(saveT);saveT=null;await touch(saveSoon.n)}}
+let autoT;function changed(){drawSide();if(S.gh&&navigator.onLine){clearTimeout(autoT);autoT=setTimeout(()=>sync(true),20000)}}
+
+/* ---------- Markdown ---------- */
+function inl(s){
+ const tok=[];const put=h=>'\u0000'+(tok.push(h)-1)+'\u0000';
+ s=esc(s);
+ s=s.replace(/`([^`]+)`/g,(m,c)=>put('<code>'+c+'</code>'));
+ s=s.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,(m,t,a)=>{const real=t.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();return put(`<a href="#" class="wl ${byTitle(real)?'':'miss'}" data-wl="${esc(real)}">${a||t}</a>`)});
+ s=s.replace(/\[([^\]]+)\]\(((?:https?:\/\/|mailto:)[^)\s]+)\)/g,(m,t,u)=>put(`<a href="${u}" target="_blank" rel="noopener noreferrer">${t}</a>`));
+ s=s.replace(/(^|[\s(])(https?:\/\/[^\s<]+[^\s<.,;:)])/g,(m,p,u)=>p+put(`<a href="${u}" target="_blank" rel="noopener noreferrer">${u}</a>`));
+ s=s.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/(^|[^*\w])\*([^*\s][^*]*)\*/g,'$1<i>$2</i>').replace(/~~([^~]+)~~/g,'<s>$1</s>');
+ s=s.replace(TAG,(m,p,t)=>p+`<a href="#" class="chip" data-tag="${t.toLowerCase()}">#${t}</a>`);
+ return s.replace(/\u0000(\d+)\u0000/g,(m,i)=>tok[i]);
+}
+function md(src){
+ const L=src.split('\n'),out=[];let i=0,para=[];
+ const fl=()=>{if(para.length){out.push('<p>'+para.map(inl).join('<br>')+'</p>');para=[]}};
+ while(i<L.length){
+  const l=L[i];let m;
+  if(/^```/.test(l)){fl();const c=[];i++;while(i<L.length&&!/^```/.test(L[i]))c.push(L[i++]);i++;out.push('<pre><code>'+esc(c.join('\n'))+'</code></pre>');continue}
+  if(m=l.match(/^(#{1,6})\s+(.*)/)){fl();out.push(`<h${m[1].length}>${inl(m[2])}</h${m[1].length}>`);i++;continue}
+  if(/^\s*(-{3,}|\*{3,}|_{3,})\s*$/.test(l)){fl();out.push('<hr>');i++;continue}
+  if(/^>\s?/.test(l)){fl();const c=[];while(i<L.length&&/^>\s?/.test(L[i]))c.push(inl(L[i++].replace(/^>\s?/,'')));out.push('<blockquote>'+c.join('<br>')+'</blockquote>');continue}
+  if(m=l.match(/^(\s*)([-*+]|\d+[.)])\s+(.*)/)){fl();
+   const ind=Math.min(6,Math.floor(m[1].replace(/\t/g,'  ').length/2))*22;let t=m[3],c;
+   if(c=t.match(/^\[([ xX])\]\s+(.*)/)){const on=c[1]!==' ';out.push(`<div class="li" style="margin-left:${ind}px"><span><input type="checkbox" data-ln="${i}" ${on?'checked':''} aria-label="Hoàn thành"></span><span class="${on?'done':''}">${inl(c[2])}</span></div>`)}
+   else out.push(`<div class="li" style="margin-left:${ind}px"><span>${/\d/.test(m[2])?esc(m[2]):'•'}</span><span>${inl(t)}</span></div>`);
+   i++;continue}
+  if(l.includes('|')&&i+1<L.length&&/^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(L[i+1])){fl();
+   const cells=r=>r.trim().replace(/^\||\|$/g,'').split('|').map(x=>inl(x.trim()));
+   let h='<table><thead><tr>'+cells(l).map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>';i+=2;
+   while(i<L.length&&L[i].includes('|')&&L[i].trim())h+='<tr>'+cells(L[i++]).map(x=>'<td>'+x+'</td>').join('')+'</tr>';
+   out.push(h+'</tbody></table>');continue}
+  if(!l.trim()){fl();i++;continue}
+  para.push(l);i++;
+ }
+ fl();return out.join('\n');
+}
+
+/* ---------- việc cần làm ---------- */
+function tasks(){
+ const out=[];const now=new Date();
+ for(const n of live()){if(n.para==='archive')continue;
+  n.body.split('\n').forEach((l,ln)=>{const m=l.match(/^\s*[-*+]\s+\[([ xX])\]\s+(.*)/);if(!m)return;
+   let due=null;const d=m[2].match(/@(\d{1,2})\/(\d{1,2})(?:\/(\d{4}))?/);
+   if(d)due=new Date(+(d[3]||now.getFullYear()),d[2]-1,+d[1]).getTime();
+   out.push({n,ln,done:m[1]!==' ',text:m[2],due})})}
+ return out;
+}
+async function toggleLine(n,ln){const L=n.body.split('\n');if(L[ln]==null)return;L[ln]=/\[ \]/.test(L[ln])?L[ln].replace('[ ]','[x]'):L[ln].replace(/\[[xX]\]/,'[ ]');n.body=L.join('\n');await touch(n)}
+
+/* ---------- tìm kiếm & liên quan ---------- */
+function search(q){
+ const ws=norm(q).split(/\s+/).filter(Boolean);if(!ws.length)return[];
+ const r=[];
+ for(const n of live()){let sc=0,ok=true;
+  for(const w of ws){const t=n._nt.includes(w),b=n._nb.includes(w)||n._tags.some(x=>norm(x).includes(w.replace(/^#/,'')));if(!t&&!b){ok=false;break}sc+=(t?5:0)+(b?1:0)}
+  if(ok)r.push({n,sc:sc+(n.pinned?1:0)})}
+ return r.sort((a,b)=>b.sc-a.sc||b.n.updated-a.n.updated).map(x=>x.n);
+}
+function hl(text,q){
+ const ws=norm(q).split(/\s+/).filter(Boolean);const cs=[...String(text).normalize('NFC')];const nt=cs.map(nc).join('');
+ const mk=new Uint8Array(cs.length);
+ for(const w of ws){let p=0;while((p=nt.indexOf(w,p))>=0){mk.fill(1,p,p+w.length);p+=w.length}}
+ let o='',on=false;cs.forEach((c,i)=>{if(mk[i]&&!on){o+='<mark>';on=true}if(!mk[i]&&on){o+='</mark>';on=false}o+=esc(c)});
+ return o+(on?'</mark>':'');
+}
+function snip(n,q){
+ const b=n.body.replace(/^#{1,6}\s+/gm,'').replace(/\*\*|^>\s?|^\s*[-*+]\s+(\[[ xX]\]\s+)?/gm,'').replace(/\[\[([^\]|]+)(\|[^\]]+)?\]\]/g,'$1').replace(/\s+/g,' ').trim();if(!q)return esc(b.slice(0,160));
+ const w=norm(q).split(/\s+/)[0];const p=norm(b).indexOf(w);const s=Math.max(0,p-50);
+ return (s?'…':'')+hl(b.slice(s,s+170),q);
+}
+const STOP=new Set('va la cua co cho cac nhung mot duoc trong khong nay da de voi tu khi thi ve nhu den tai do se dang ra len vao hay hoac theo neu con cung rat it nhieu the and for with that this'.split(' '));
+let dfCache=null;
+const tfOf=n=>n._tf||(n._tf=(()=>{const m=new Map();for(const w of (n._nt+' '+n._nt+' '+n._nb).split(/[^\p{L}\d]+/u))if(w.length>1&&!STOP.has(w))m.set(w,(m.get(w)||0)+1);return m})());
+function related(n){
+ const all=live();if(all.length<2)return[];
+ if(!dfCache){dfCache=new Map();for(const x of all)for(const w of tfOf(x).keys())dfCache.set(w,(dfCache.get(w)||0)+1)}
+ const N=all.length,w8=(tf,w)=>(1+Math.log(tf))*Math.log(1+N/(dfCache.get(w)||1));
+ const vec=x=>{let s=0;const v=new Map();for(const[w,c]of tfOf(x)){const z=w8(c,w);v.set(w,z);s+=z*z}return{v,len:Math.sqrt(s)||1}};
+ const a=vec(n);const r=[];
+ for(const x of all){if(x.id===n.id)continue;const b=vec(x);let d=0;for(const[w,z]of a.v){const y=b.v.get(w);if(y)d+=z*y}const sc=d/(a.len*b.len);if(sc>.15)r.push({x,sc})}
+ return r.sort((p,q)=>q.sc-p.sc).slice(0,5).map(o=>o.x);
+}
+const backlinks=n=>live().filter(x=>x.id!==n.id&&x._links.includes(n._nt)&&n._nt);
+
+/* ---------- giao diện ---------- */
+const route=()=>decodeURIComponent(location.hash.slice(1))||'list/all';
+function go(r){if(route()===r)draw();else location.hash=encodeURIComponent(r).replace(/%2F/g,'/').replace(/%3A/g,':')}
+function drawSide(){
+ const L=live(),c=p=>L.filter(n=>n.para===p).length,r=route();
+ const due=L.filter(reviewable).length,open=tasks().filter(t=>!t.done).length;
+ const tags=new Map();L.forEach(n=>n._tags.forEach(t=>tags.set(t,(tags.get(t)||0)+1)));
+ const b=(go,label,cnt)=>`<button class="nav ${r===go?'on':''}" data-go="${esc(go)}"><span>${esc(label)}</span>${cnt?`<small>${cnt}</small>`:''}</button>`;
+ $('#navs').innerHTML=b('list/all','Tất cả ghi chú',L.length)+b('list/inbox','Hộp thư đến',c('inbox'))+b('tasks','Việc cần làm',open)+b('review','Ôn lại hôm nay',due)+b('graph','Sơ đồ liên kết')+b('search','Tìm kiếm')
+  +'<h2>Sắp xếp theo PARA</h2>'+['project','area','resource','archive'].map(p=>b('list/'+p,PARA[p],c(p))).join('')
+  +(tags.size?'<h2>Thẻ</h2>'+[...tags].sort((a,z)=>z[1]-a[1]).slice(0,30).map(([t,k])=>b('list/tag:'+t,'#'+t,k)).join(''):'')
+  +'<h2>Hệ thống</h2>'+b('settings','Cài đặt và đồng bộ');
+ const pend=[...S.notes.values()].filter(n=>n.dirty).length;
+ $('#syncst').textContent=!S.gh?'Chưa kết nối GitHub':S.syncing?'Đang đồng bộ…':S.err?'Lỗi đồng bộ: '+S.err:pend?pend+' thay đổi chờ đồng bộ':S.last?'Đã đồng bộ lúc '+new Date(S.last).toTimeString().slice(0,5):'Đã kết nối '+S.gh.owner+'/'+S.gh.repo;
+ document.querySelectorAll('#tabs [data-go]').forEach(x=>x.classList.toggle('on',r.split('/')[0]===x.dataset.go.split('/')[0]));
+}
+const itemH=(n,q)=>`<button class="item" data-open="${n.id}"><b>${n.pinned?'★ ':''}${q?hl(n.title||'(chưa đặt tên)',q):esc(n.title||'(chưa đặt tên)')}</b><p>${snip(n,q)}</p><span class="meta"><span>${PARA[n.para]}</span><span>${ago(n.updated)}</span>${n._tags.slice(0,4).map(t=>`<span class="chip">#${esc(t)}</span>`).join('')}</span></button>`;
+const reviewable=n=>n.para!=='archive'&&n.para!=='inbox'&&n.body.trim().length>20&&!/^Nhật ký \d{4}/.test(n.title)&&(n.due||0)<=Date.now();
+
+async function draw(){
+ await flush();
+ const r=route(),[v,...rest]=r.split('/'),arg=rest.join('/');
+ document.body.classList.remove('open');document.body.classList.toggle('note',v==='n');
+ const V=$('#view'),T=$('#vt'),A=$('#va');A.innerHTML='';window.scrollTo(0,0);
+ if(v==='n'){const n=S.notes.get(arg);if(!n||n.deleted){go('list/all');return}drawNote(n);drawSide();return}
+ S.cur=null;
+ if(v==='list'){
+  let L=live(),title='Ghi chú';
+  if(arg.startsWith('tag:')){const t=arg.slice(4);L=L.filter(n=>n._tags.includes(t));title='#'+t}
+  else if(PARA[arg]){L=L.filter(n=>n.para===arg);title=PARA[arg]}
+  L.sort((a,b)=>(b.pinned-a.pinned)||b.updated-a.updated);
+  T.textContent=title;
+  A.innerHTML='<button data-act="tpl">Mẫu</button><button class="pri" data-act="new">Ghi chú mới</button>';
+  V.innerHTML=`<form class="cap" id="capf"><input type="text" id="cap" placeholder="Ghi nhanh một ý, Enter để lưu vào Hộp thư đến" aria-label="Ghi nhanh"><button>Lưu</button></form>`
+   +(arg==='inbox'&&L.length?'<p class="meta" style="margin:-4px 0 12px">Mỗi tuần nên dọn hộp thư một lần: mở từng ghi chú và chuyển vào Dự án, Lĩnh vực, Tài nguyên hoặc Lưu trữ.</p>':'')
+   +(L.length?L.map(n=>itemH(n)).join(''):'<div class="empty">Chưa có ghi chú nào ở đây.</div>');
+  $('#capf').onsubmit=async e=>{e.preventDefault();const t=$('#cap').value.trim();if(!t)return;await capture(t);toast('Đã lưu vào Hộp thư đến');await draw();$('#cap').focus()};
+ }
+ else if(v==='search'){
+  T.textContent='Tìm kiếm';
+  V.innerHTML=`<div class="cap"><input type="search" id="q" placeholder="Gõ có dấu hoặc không dấu đều được" value="${esc(S.q)}" aria-label="Từ khoá"></div><div id="res"></div>`;
+  const run=()=>{S.q=$('#q').value;const R=search(S.q);$('#res').innerHTML=!S.q.trim()?'<div class="empty">Tìm theo tiêu đề, nội dung hoặc thẻ.</div>':R.length?R.map(n=>itemH(n,S.q)).join(''):'<div class="empty">Không tìm thấy ghi chú phù hợp.</div>'};
+  $('#q').oninput=run;run();$('#q').focus();
+ }
+ else if(v==='tasks'){
+  T.textContent='Việc cần làm';
+  const all=tasks(),t0=new Date(ymd(new Date())+'T00:00').getTime();
+  const g={late:[],today:[],soon:[],none:[],done:[]};
+  for(const t of all){if(t.done)g.done.push(t);else if(t.due==null)g.none.push(t);else if(t.due<t0)g.late.push(t);else if(t.due<t0+DAY)g.today.push(t);else g.soon.push(t)}
+  ['late','today','soon'].forEach(k=>g[k].sort((a,b)=>a.due-b.due));g.done=g.done.slice(0,20);
+  const row=t=>`<div class="task"><input type="checkbox" data-tn="${t.n.id}" data-ln="${t.ln}" ${t.done?'checked':''} aria-label="Hoàn thành"><div><span class="${t.done?'md done':''}">${inl(t.text)}</span><br><button data-open="${t.n.id}">${t.due!=null?`<span class="${!t.done&&t.due<t0?'late':''}">Hạn ${dmy(t.due)}</span> · `:''}${esc(t.n.title||'(chưa đặt tên)')}</button></div></div>`;
+  const sec=(k,h)=>g[k].length?`<h3 class="grp">${h} (${g[k].length})</h3>`+g[k].map(row).join(''):'';
+  V.innerHTML=(all.length?sec('late','Quá hạn')+sec('today','Hôm nay')+sec('soon','Sắp tới')+sec('none','Chưa đặt hạn')+sec('done','Đã xong gần đây'):'<div class="empty">Chưa có việc nào.</div>')
+   +'<p class="meta" style="margin-top:16px">Trong ghi chú bất kỳ, gõ dòng “- [ ] Nội dung việc @20/11” để tạo việc có hạn ngày 20/11.</p>';
+ }
+ else if(v==='review'){
+  T.textContent='Ôn lại hôm nay';
+  const L=live().filter(reviewable).sort((a,b)=>a.due-b.due).slice(0,5);
+  V.innerHTML='<p class="meta" style="margin-bottom:12px">Mỗi ngày đọc lại vài ghi chú cũ để nhớ lâu và nảy ý mới. Ghi chú đã ôn sẽ quay lại sau 1, 3, 7, 14, 30, 60, 120 ngày.</p>'+(L.length?L.map(n=>`<div class="card"><h3>${esc(n.title||'(chưa đặt tên)')}</h3><div class="md">${md(n.body.split('\n').slice(0,14).join('\n'))}</div><div class="row" style="margin-top:10px"><button class="pri" data-rv="ok" data-id="${n.id}">Đã ôn, còn nhớ</button><button data-rv="again" data-id="${n.id}">Cần ôn lại sớm</button><button data-open="${n.id}">Mở để sửa</button><button data-rv="arch" data-id="${n.id}">Lưu trữ</button></div></div>`).join(''):'<div class="empty">Hôm nay không còn ghi chú nào cần ôn.</div>');
+ }
+ else if(v==='graph'){T.textContent='Sơ đồ liên kết';V.innerHTML='<canvas id="graph"></canvas><p class="meta" style="margin-top:8px">Mỗi chấm là một ghi chú, đường nối là liên kết [[ ]]. Chạm vào chấm để mở.</p>';drawGraph()}
+ else if(v==='settings'){T.textContent='Cài đặt và đồng bộ';drawSettings()}
+ else{go('list/all');return}
+ drawSide();
+}
+
+function drawNote(n){
+ S.cur=n.id;const V=$('#view');$('#vt').textContent='';
+ $('#va').innerHTML=`<button data-act="back" aria-label="Quay lại" style="margin-right:auto;white-space:nowrap">‹ Về</button><button data-act="mode">${S.mode==='edit'?'Xem':'Sửa'}</button><select id="para" aria-label="Phân loại" style="width:auto">${Object.keys(PARA).map(p=>`<option value="${p}" ${n.para===p?'selected':''}>${PARA[p]}</option>`).join('')}</select><button data-act="pin" aria-label="Ghim">${n.pinned?'★':'☆'}</button><button class="dang" data-act="del">Xoá</button>`;
+ const bl=backlinks(n),rl=related(n).filter(x=>!bl.includes(x));
+ const extra=`<div class="meta" style="margin-top:14px">Tạo ${dmy(n.created)} · sửa ${ago(n.updated)}</div>`
+  +(bl.length?`<div class="sec"><h3>Được nhắc đến ở (${bl.length})</h3>${bl.map(x=>itemH(x)).join('')}</div>`:'')
+  +(rl.length?`<div class="sec"><h3>Ghi chú có nội dung gần</h3>${rl.map(x=>itemH(x)).join('')}</div>`:'');
+ if(S.mode==='edit'){
+  V.innerHTML=`<input id="ttl" type="text" placeholder="Tiêu đề" value="${esc(n.title)}" aria-label="Tiêu đề"><div class="tb">${[['h','Đề mục'],['b','Đậm'],['li','Gạch đầu dòng'],['todo','Việc'],['wl','Liên kết [[ ]]'],['tag','Thẻ #'],['date','Ngày'],['q','Trích dẫn']].map(([k,l])=>`<button type="button" data-ins="${k}">${l}</button>`).join('')}</div><div id="ac"></div><textarea id="body" placeholder="Viết ở đây. Dùng [[Tên ghi chú]] để liên kết, #thẻ để gắn thẻ." aria-label="Nội dung">${esc(n.body)}</textarea>${extra}`;
+  const B=$('#body'),fit=()=>{B.style.height='auto';B.style.height=B.scrollHeight+4+'px'};fit();
+  $('#ttl').oninput=e=>{n.title=e.target.value;saveSoon(n)};
+  B.oninput=()=>{n.body=B.value;saveSoon(n);fit();suggest(B)};
+  if(!n.title&&!n.body)$('#ttl').focus();
+ }else{
+  V.innerHTML=`<h1 style="font-size:26px;margin:4px 0 8px;line-height:1.2">${esc(n.title||'(chưa đặt tên)')}</h1><div class="md">${n.body.trim()?md(n.body):'<p class="empty">Ghi chú trống. Bấm “Sửa” để viết.</p>'}</div>${extra}`;
+ }
+ $('#para').onchange=async e=>{n.para=e.target.value;await touch(n);toast('Đã chuyển vào '+PARA[n.para])};
+}
+function suggest(B){
+ const pre=B.value.slice(0,B.selectionStart),m=pre.match(/\[\[([^\]\n]{0,40})$/),ac=$('#ac');
+ if(!m){ac.innerHTML='';return}
+ const q=norm(m[1]);const L=live().filter(n=>n.id!==S.cur&&n.title&&n._nt.includes(q)).sort((a,b)=>b.updated-a.updated).slice(0,6);
+ ac.innerHTML=L.map(n=>`<button type="button" class="chip" data-pick="${esc(n.title)}">${esc(n.title)}</button>`).join('');
+}
+function insert(k){
+ const B=$('#body');if(!B)return;const s=B.selectionStart,e=B.selectionEnd,v=B.value,sel=v.slice(s,e);
+ const ls=v.lastIndexOf('\n',s-1)+1;let a=s,b=e,t;
+ const line=p=>{a=b=ls;t=p};
+ if(k==='h')line('## ');else if(k==='li')line('- ');else if(k==='todo')line('- [ ] ');else if(k==='q')line('> ');
+ else if(k==='b')t='**'+(sel||'chữ đậm')+'**';else if(k==='wl')t='[['+sel;else if(k==='tag')t='#';else if(k==='date')t=dmy(Date.now());
+ B.setRangeText(t,a,b,'end');if(k==='wl'&&sel)B.setRangeText(']]',B.selectionStart,B.selectionStart,'end');
+ B.focus();B.dispatchEvent(new Event('input'));
+}
+async function capture(t){const first=t.split('\n')[0];const title=first.length>70?first.slice(0,67)+'…':first;return addNote({title,body:first.length>70||t.includes('\n')?t:''})}
+const TPL={
+ 'Cuộc họp, hội nghị':'## Thông tin\n- Thời gian: {d}\n- Chủ trì: \n- Thành phần: \n\n## Nội dung chính\n- \n\n## Kết luận, chỉ đạo\n- \n\n## Việc phải làm\n- [ ] \n\n#họp',
+ 'Ý tưởng':'## Ý tưởng\n\n\n## Vì sao đáng làm\n\n\n## Bước đầu tiên\n- [ ] \n\n#ýtưởng',
+ 'Tài liệu đã đọc':'## Nguồn\n- Tên tài liệu: \n- Tác giả, cơ quan ban hành: \n\n## Ba ý chính\n1. \n2. \n3. \n\n## Trích dẫn đáng nhớ\n> \n\n## Tôi sẽ dùng vào việc gì\n\n\n#đọc',
+ 'Văn bản, dự án luật':'## Hồ sơ\n- Tên văn bản: \n- Cơ quan trình: \n- Thời hạn góp ý: \n\n## Vấn đề cần lưu ý\n- \n\n## Ý kiến của tôi\n- \n\n## Việc phải làm\n- [ ] \n\n#vănbản',
+ 'Dự án, công việc lớn':'## Mục tiêu\n\n\n## Mốc thời gian\n- \n\n## Việc phải làm\n- [ ] \n\n## Ghi chép liên quan\n- [[ ]]\n'
+};
+async function today(){const t='Nhật ký '+ymd(new Date());let n=byTitle(t);if(!n)n=await addNote({title:t,para:'area',body:'## Việc chính hôm nay\n- [ ] \n\n## Ghi chép\n\n\n## Điều rút ra\n\n\n#nhậtký'});S.mode='edit';go('n/'+n.id)}
+
+/* ---------- sơ đồ ---------- */
+function drawGraph(){
+ const cv=$('#graph'),W=cv.clientWidth,H=cv.clientHeight,dpr=window.devicePixelRatio||1;cv.width=W*dpr;cv.height=H*dpr;
+ const g=cv.getContext('2d');g.scale(dpr,dpr);
+ const L=live().sort((a,b)=>b.updated-a.updated).slice(0,300);const map=new Map(L.map(n=>[n._nt,n]));
+ const N=L.map((n,i)=>({n,x:W/2+Math.cos(i*2.4)*(40+i*3)%(W/2),y:H/2+Math.sin(i*2.4)*(40+i*3)%(H/2),vx:0,vy:0,d:0}));
+ const at=new Map(N.map(o=>[o.n.id,o]));const E=[];
+ for(const o of N)for(const l of o.n._links){const t=map.get(l);if(t&&t.id!==o.n.id){const p=at.get(t.id);E.push([o,p]);o.d++;p.d++}}
+ for(let k=0;k<260;k++){
+  for(let i=0;i<N.length;i++)for(let j=i+1;j<N.length;j++){const a=N[i],b=N[j];let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy+.01;const f=Math.min(1800/d2,6),d=Math.sqrt(d2);dx/=d;dy/=d;a.vx+=dx*f;a.vy+=dy*f;b.vx-=dx*f;b.vy-=dy*f}
+  for(const[a,b]of E){const dx=b.x-a.x,dy=b.y-a.y,d=Math.sqrt(dx*dx+dy*dy)||1,f=(d-90)*.02;a.vx+=dx/d*f;a.vy+=dy/d*f;b.vx-=dx/d*f;b.vy-=dy/d*f}
+  for(const o of N){o.vx+=(W/2-o.x)*.004;o.vy+=(H/2-o.y)*.004;o.x+=o.vx*.6;o.y+=o.vy*.6;o.vx*=.6;o.vy*=.6;o.x=Math.max(16,Math.min(W-16,o.x));o.y=Math.max(16,Math.min(H-22,o.y))}
+ }
+ const cs=getComputedStyle(document.documentElement),acc=cs.getPropertyValue('--acc'),ink=cs.getPropertyValue('--ink'),line=cs.getPropertyValue('--mut');
+ g.strokeStyle=line;g.globalAlpha=.5;for(const[a,b]of E){g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke()}
+ g.globalAlpha=1;g.font='12px -apple-system,Segoe UI,sans-serif';g.textAlign='center';
+ for(const o of N){g.fillStyle=o.d?acc:line;g.beginPath();g.arc(o.x,o.y,4+Math.min(o.d,6),0,7);g.fill();if(o.d||N.length<40){g.fillStyle=ink;const t=o.n.title||'';g.fillText(t.length>22?t.slice(0,21)+'…':t,o.x,o.y+18+Math.min(o.d,6))}}
+ cv.onclick=e=>{const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;let best=null,bd=24*24;for(const o of N){const d=(o.x-x)**2+(o.y-y)**2;if(d<bd){bd=d;best=o}}if(best){S.mode='view';go('n/'+best.n.id)}};
+}
+
+/* ---------- cài đặt ---------- */
+function drawSettings(){
+ const g=S.gh;
+ $('#view').innerHTML=`
+ <div class="card"><h3>Đồng bộ với GitHub</h3><p>Mỗi ghi chú được lưu thành một tệp Markdown trong kho GitHub riêng tư của đồng chí. Nhờ đó dữ liệu có bản sao, có lịch sử sửa đổi và dùng được trên nhiều máy.</p>
+  ${g?`<p>Đang kết nối kho <b>${esc(g.owner)}/${esc(g.repo)}</b>.</p><div class="row"><button class="pri" data-act="sync">Đồng bộ ngay</button><button data-act="ghoff">Ngắt kết nối</button></div>`
+  :`<label for="gr">Kho dữ liệu (dạng tên-tài-khoản/tên-kho)</label><input type="text" id="gr" placeholder="vi-du/bo-nao-du-lieu" autocapitalize="off" autocomplete="off" spellcheck="false"><label for="gt">Mã truy cập (Personal access token)</label><input type="password" id="gt" placeholder="github_pat_…" autocomplete="off"><p style="margin-top:8px">Tạo kho riêng tư trước, rồi tạo mã truy cập loại “Fine-grained” chỉ cho kho đó, quyền Contents: Read and write. Mã chỉ lưu trên máy này.</p><button class="pri" data-act="ghon">Kết nối và đồng bộ</button>`}
+ </div>
+ <div class="card"><h3>Khoá bằng mật khẩu</h3><p>${S.cm?'Đang bật. Ghi chú được mã hoá AES-256 trên máy này và trước khi gửi lên GitHub. Quên mật khẩu thì không khôi phục được.':'Đang tắt. Khi bật, ghi chú được mã hoá AES-256 cả trên máy lẫn trên GitHub; GitHub chỉ thấy dữ liệu đã mã hoá.'}</p>
+  <div class="row">${S.cm?'<button data-act="lock">Khoá ngay</button><button data-act="pwset">Đổi mật khẩu</button><button class="dang" data-act="pwoff">Tắt mã hoá</button>':'<button class="pri" data-act="pwset">Đặt mật khẩu</button>'}</div></div>
+ <div class="card"><h3>Sao lưu và chuyển dữ liệu</h3><p>Tệp ZIP chứa các tệp Markdown, mở được bằng Obsidian hoặc trình soạn thảo bất kỳ. Tệp JSON dùng để khôi phục nguyên trạng.</p>
+  <div class="row"><button data-act="exzip">Xuất ZIP Markdown</button><button data-act="exjson">Xuất JSON</button><button data-act="imp">Nhập tệp .json hoặc .md</button></div><input type="file" id="impf" accept=".json,.md,.txt" multiple hidden></div>
+ <div class="card"><h3>Ghi nhanh từ iPhone</h3><p>Thêm “?ghi=nội dung” vào sau địa chỉ ứng dụng để lưu thẳng vào Hộp thư đến. Dùng được trong ứng dụng Phím tắt (Shortcuts) của iPhone để ghi bằng giọng nói.</p></div>
+ <div class="meta">${live().length} ghi chú · dữ liệu lưu trên máy này${g?' và trên GitHub':''}.</div>`;
+ const f=$('#impf');if(f)f.onchange=()=>importFiles(f.files);
+}
+async function setPassword(){
+ const v=await dialog({title:S.cm?'Đổi mật khẩu':'Đặt mật khẩu',text:'Mật khẩu dùng để mã hoá toàn bộ ghi chú. Hãy ghi nhớ: quên mật khẩu thì không khôi phục được dữ liệu.',fields:[{name:'a',label:'Mật khẩu mới (từ 8 ký tự)',type:'password'},{name:'b',label:'Nhập lại',type:'password'}],ok:'Lưu'});
+ if(!v)return;if(v.a.length<8){toast('Mật khẩu cần từ 8 ký tự');return}if(v.a!==v.b){toast('Hai lần nhập chưa khớp');return}
+ const c=await newCrypto(v.a);S.key=c.key;S.cm=c.cm;await kvSet('crypto',S.cm);await kvSet('cryptoChanged',true);
+ for(const n of S.notes.values())n.dirty=true;await resaveAll();toast('Đã bật mã hoá');draw();
+}
+async function offPassword(){
+ const v=await dialog({title:'Tắt mã hoá',text:'Ghi chú sẽ được lưu ở dạng đọc được, cả trên máy lẫn trên GitHub.',ok:'Tắt mã hoá',danger:true});if(!v)return;
+ S.key=null;S.cm=null;await tx('kv','readwrite',s=>s.delete('crypto'));await kvSet('cryptoChanged',true);
+ for(const n of S.notes.values())n.dirty=true;await resaveAll();toast('Đã tắt mã hoá');draw();
+}
+
+/* ---------- xuất, nhập ---------- */
+function download(name,blob){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+const CRC=(()=>{const t=new Uint32Array(256);for(let i=0;i<256;i++){let c=i;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[i]=c>>>0}return t})();
+const crc32=u=>{let c=~0;for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&255]^(c>>>8);return~c>>>0};
+function zip(files){
+ const parts=[],cd=[];let off=0;
+ for(const f of files){const nm=te.encode(f.name),d=te.encode(f.text),crc=crc32(d);
+  const h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x800,true);h.setUint32(14,crc,true);h.setUint32(18,d.length,true);h.setUint32(22,d.length,true);h.setUint16(26,nm.length,true);
+  parts.push(new Uint8Array(h.buffer),nm,d);
+  const c=new DataView(new ArrayBuffer(46));c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x800,true);c.setUint32(16,crc,true);c.setUint32(20,d.length,true);c.setUint32(24,d.length,true);c.setUint16(28,nm.length,true);c.setUint32(42,off,true);
+  cd.push(new Uint8Array(c.buffer),nm);off+=30+nm.length+d.length}
+ const cs=cd.reduce((s,x)=>s+x.length,0),e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);
+ return new Blob([...parts,...cd,new Uint8Array(e.buffer)],{type:'application/zip'});
+}
+const safeName=s=>(s||'chua-dat-ten').replace(/[\\/:*?"<>|\n]/g,' ').trim().slice(0,80);
+function exportZip(){const seen=new Set();download('bo-nao-thu-hai-'+ymd(new Date())+'.zip',zip(live().map(n=>{let nm=PARA[n.para]+'/'+safeName(n.title);while(seen.has(nm))nm+=' ('+n.id.slice(-4)+')';seen.add(nm);return{name:nm+'.md',text:toFile(n)}})))}
+function exportJson(){download('bo-nao-thu-hai-'+ymd(new Date())+'.json',new Blob([JSON.stringify({app:'bonao2',v:1,notes:live().map(plain)},null,1)],{type:'application/json'}))}
+async function importFiles(fs){let k=0;
+ for(const f of fs){const t=await f.text();
+  if(/\.json$/i.test(f.name)){let d;try{d=JSON.parse(t)}catch(e){toast('Tệp JSON không hợp lệ');continue}
+   for(const p of d.notes||[]){if(typeof p.body!=='string')continue;const old=S.notes.get(p.id);if(old&&!old.deleted&&old.updated>=p.updated)continue;const n={...plain(p),id:p.id||nid(),sha:old?old.sha:null,dirty:true,deleted:false};if(!PARA[n.para])n.para='inbox';idx(n);S.notes.set(n.id,n);await putNote(n);k++}}
+  else{const p=fromFile(t,nid());if(!/^---\n/.test(t))p.title=f.name.replace(/\.(md|txt)$/i,'');await addNote({title:p.title,body:p.body,para:p.para});k++}}
+ changed();toast('Đã nhập '+k+' ghi chú');draw();
+}
+
+/* ---------- định dạng tệp trên GitHub ---------- */
+const iso=t=>new Date(t).toISOString();
+function toFile(n){return`---\nid: ${n.id}\ntitle: ${JSON.stringify(n.title)}\npara: ${n.para}\npinned: ${!!n.pinned}\ncreated: ${iso(n.created)}\nupdated: ${iso(n.updated)}\nreview: ${n.step||0}|${iso(n.due||n.created)}\n---\n${n.body}`}
+function fromFile(text,id){
+ const now=Date.now(),n={id,title:'',body:text,para:'inbox',pinned:false,created:now,updated:now,step:0,due:now+DAY};
+ const m=text.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+ if(!m){n.title=(text.split('\n')[0]||'').replace(/^#+\s*/,'').slice(0,70);return n}
+ n.body=m[2];
+ for(const l of m[1].split('\n')){const p=l.indexOf(':');if(p<0)continue;const k=l.slice(0,p).trim(),v=l.slice(p+1).trim();
+  if(k==='title'){try{n.title=String(JSON.parse(v))}catch(e){n.title=v}}
+  else if(k==='para'&&PARA[v])n.para=v;else if(k==='pinned')n.pinned=v==='true';
+  else if(k==='created'||k==='updated'){const t=Date.parse(v);if(t)n[k]=t}
+  else if(k==='review'){const[a,b]=v.split('|');n.step=+a||0;n.due=Date.parse(b)||now}}
+ return n;
+}
+async function blobSha(text){const d=te.encode(text),h=te.encode('blob '+d.length+'\0'),u=new Uint8Array(h.length+d.length);u.set(h);u.set(d,h.length);return[...new Uint8Array(await crypto.subtle.digest('SHA-1',u))].map(b=>b.toString(16).padStart(2,'0')).join('')}
+const ENC='BONAO2-ENC:v1:';
+
+/* ---------- đồng bộ GitHub ---------- */
+async function api(path,opt={}){
+ const r=await fetch('https://api.github.com/repos/'+S.gh.owner+'/'+S.gh.repo+path,{method:opt.method||'GET',headers:{Authorization:'Bearer '+S.gh.token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',...(opt.body?{'Content-Type':'application/json'}:{})},body:opt.body?JSON.stringify(opt.body):undefined,cache:'no-store'});
+ if(!r.ok&&!(opt.allow||[]).includes(r.status)){
+  const msg={401:'mã truy cập sai hoặc đã hết hạn',403:'mã truy cập chưa có quyền Contents: Read and write',404:'không thấy kho, hoặc mã truy cập chưa được cấp cho kho này'}[r.status];
+  const e=new Error(msg||('GitHub trả lời '+r.status));e.status=r.status;throw e}
+ return{status:r.status,data:r.status===204?null:await r.json().catch(()=>null)};
+}
+const getBlob=async sha=>td.decode(b64d((await api('/git/blobs/'+sha)).data.content));
+async function pool(items,n,fn){let i=0;await Promise.all(Array.from({length:Math.min(n,items.length)},async()=>{while(i<items.length){const it=items[i++];await fn(it)}}))}
+async function sync(quiet,again){
+ if(!S.gh||S.syncing)return;if(!navigator.onLine){if(!quiet)toast('Đang không có mạng');return}
+ await flush();S.syncing=true;S.err=null;drawSide();
+ try{
+  const repo=(await api('')).data,br=repo.default_branch||'main';
+  let ref=await api('/git/ref/heads/'+br,{allow:[404,409]});
+  if(ref.status!==200){await api('/contents/README.md',{method:'PUT',body:{message:'Khởi tạo kho dữ liệu Bộ não thứ hai',content:b64e(te.encode('# Dữ liệu Bộ não thứ hai\n\nKho này do ứng dụng Bộ não thứ hai quản lý. Mỗi tệp trong thư mục notes là một ghi chú.\n')),branch:br}});ref=await api('/git/ref/heads/'+br)}
+  const head=ref.data.object.sha,commit=(await api('/git/commits/'+head)).data;
+  const tree=(await api('/git/trees/'+commit.tree.sha+'?recursive=1')).data.tree||[];
+  const remote=new Map();let brainSha=null;
+  for(const t of tree){if(t.type!=='blob')continue;const m=t.path.match(/^notes\/([a-z0-9]+)\.md$/);if(m)remote.set(m[1],t.sha);else if(t.path==='brain.json')brainSha=t.sha}
+  /* khoá mã hoá: máy vừa đổi mật khẩu thì máy thắng, ngược lại theo kho */
+  const localChanged=await kvGet('cryptoChanged');
+  if(brainSha&&!localChanged){let bm={};try{bm=JSON.parse(await getBlob(brainSha))}catch(e){}
+   if(bm.encrypted&&(!S.cm||S.cm.salt!==bm.salt)){
+    const v=await dialog({title:'Kho dữ liệu đang được mã hoá',text:'Nhập mật khẩu đã đặt cho bộ não này (trên máy khác) để giải mã.',fields:[{name:'p',label:'Mật khẩu',type:'password'}],ok:'Mở'});
+    if(!v)throw new Error('chưa nhập mật khẩu của kho');
+    const key=await checkPass(v.p,bm);if(!key)throw new Error('mật khẩu của kho không đúng');
+    S.key=key;S.cm={salt:bm.salt,verifier:bm.verifier};await kvSet('crypto',S.cm);await resaveAll();
+   }}
+  /* kéo về */
+  let pulled=0,conf=0;const need=[];
+  for(const[id,sha]of remote){const l=S.notes.get(id);if(!l||l.sha!==sha)need.push([id,sha])}
+  const got=new Map();
+  await pool(need,6,async([id,sha])=>{let t=await getBlob(sha);if(t.startsWith(ENC)){if(!S.key)throw new Error('kho đã mã hoá nhưng máy này chưa có mật khẩu');try{t=await decS(t.slice(ENC.length))}catch(e){throw new Error('không giải mã được ghi chú '+id+', mật khẩu không khớp')}}got.set(id,fromFile(t,id))});
+  for(const[id,sha]of need){const r=got.get(id),l=S.notes.get(id);r.id=id;r.sha=sha;r.dirty=false;r.deleted=false;
+   if(l&&l.dirty){
+    if(l.deleted){if(r.updated<=l.updated){l.sha=sha;await putNote(l);continue}}
+    else if(l.title===r.title&&l.body===r.body){l.sha=sha;l.dirty=false;await putNote(l);continue}
+    else{conf++;const lose=l.updated>=r.updated?r:l;await addNoteRaw({...plain(lose),id:nid(),title:(lose.title||'Ghi chú')+' (bản xung đột '+dmy(lose.updated)+')',sha:null,dirty:true,deleted:false});
+     if(l.updated>=r.updated){l.sha=sha;await putNote(l);continue}}
+   }
+   idx(r);S.notes.set(id,r);await putNote(r);pulled++}
+  for(const l of[...S.notes.values()]){if(l.sha&&!remote.has(l.id)){if(l.deleted||!l.dirty){S.notes.delete(l.id);await delRec(l.id);if(!l.deleted)pulled++}else{l.sha=null;await putNote(l)}}}
+  /* đẩy lên */
+  const ent=[],after=[];
+  for(const n of S.notes.values()){if(!n.dirty)continue;
+   if(n.deleted){if(remote.has(n.id))ent.push({path:'notes/'+n.id+'.md',mode:'100644',type:'blob',sha:null});after.push([n,null]);continue}
+   let c=toFile(n);if(S.key)c=ENC+await encS(c);ent.push({path:'notes/'+n.id+'.md',mode:'100644',type:'blob',content:c});after.push([n,await blobSha(c)])}
+  const brain=JSON.stringify(S.cm?{app:'bonao2',v:1,encrypted:true,salt:S.cm.salt,verifier:S.cm.verifier}:{app:'bonao2',v:1,encrypted:false},null,1)+'\n';
+  if(await blobSha(brain)!==brainSha)ent.push({path:'brain.json',mode:'100644',type:'blob',content:brain});
+  if(ent.length){
+   const nt=(await api('/git/trees',{method:'POST',body:{base_tree:commit.tree.sha,tree:ent}})).data;
+   const nc2=(await api('/git/commits',{method:'POST',body:{message:'Đồng bộ '+after.length+' ghi chú · '+new Date().toLocaleString('vi-VN'),tree:nt.sha,parents:[head]}})).data;
+   const up=await api('/git/refs/heads/'+br,{method:'PATCH',body:{sha:nc2.sha},allow:[422,409]});
+   if(up.status!==200){S.syncing=false;if(again)throw new Error('kho vừa có thay đổi từ máy khác, hãy đồng bộ lại');return sync(quiet,true)}
+   for(const[n,sha]of after){if(sha===null){S.notes.delete(n.id);await delRec(n.id)}else{n.sha=sha;n.dirty=false;await putNote(n)}}
+  }
+  await tx('kv','readwrite',s=>s.delete('cryptoChanged'));
+  S.last=Date.now();
+  if(!quiet||pulled||conf)toast(conf?'Đã đồng bộ. Có '+conf+' ghi chú sửa ở hai nơi, bản cũ hơn được giữ thành bản xung đột.':'Đã đồng bộ'+(pulled?': nhận '+pulled+' thay đổi':'')+(after.length?', gửi '+after.length:''));
+  if(pulled||conf){if(S.cur&&!saveT&&document.activeElement.id!=='body'&&document.activeElement.id!=='ttl'||!S.cur)draw()}
+ }catch(e){S.err=e.message||String(e);if(!quiet)toast('Chưa đồng bộ được: '+S.err)}
+ S.syncing=false;drawSide();
+}
+async function addNoteRaw(p){idx(p);S.notes.set(p.id,p);await putNote(p)}
+async function connectGh(){
+ const m=$('#gr').value.trim().replace(/^https?:\/\/github\.com\//,'').replace(/\.git$/,'').match(/^([\w.-]+)\/([\w.-]+)$/),t=$('#gt').value.trim();
+ if(!m){toast('Tên kho cần có dạng tên-tài-khoản/tên-kho');return}if(!t){toast('Chưa nhập mã truy cập');return}
+ S.gh={owner:m[1],repo:m[2],token:t};
+ try{const r=(await api('')).data;if(r&&r.private===false){const v=await dialog({title:'Kho này đang công khai',text:'Ai cũng xem được kho công khai. Nên dùng kho riêng tư, hoặc bật khoá mật khẩu để mã hoá ghi chú trước khi gửi.',ok:'Vẫn tiếp tục',danger:true});if(!v){S.gh=null;return}}}
+ catch(e){S.gh=null;toast('Chưa kết nối được: '+e.message);return}
+ await saveGh();draw();sync();
+}
+
+/* ---------- sự kiện ---------- */
+document.addEventListener('click',async e=>{
+ const t=e.target.closest('[data-go],[data-act],[data-open],[data-wl],[data-tag],[data-ins],[data-pick],[data-rv]');if(!t)return;
+ const d=t.dataset;
+ if(d.wl!=null){e.preventDefault();await flush();let n=byTitle(d.wl);if(!n){n=await addNote({title:d.wl,para:(S.notes.get(S.cur)||{}).para||'inbox'});S.mode='edit'}go('n/'+n.id);return}
+ if(d.tag!=null){e.preventDefault();go('list/tag:'+d.tag);return}
+ if(d.go){go(d.go);return}
+ if(d.open){S.mode='view';go('n/'+d.open);return}
+ if(d.ins){insert(d.ins);return}
+ if(d.pick!=null){const B=$('#body'),s=B.selectionStart,p=B.value.slice(0,s).lastIndexOf('[[');B.setRangeText(d.pick+']]',p+2,s,'end');B.focus();B.dispatchEvent(new Event('input'));return}
+ if(d.rv){const n=S.notes.get(d.id);if(!n)return;if(d.rv==='arch')n.para='archive';else{n.step=d.rv==='ok'?Math.min((n.step||0)+1,STEPS.length-1):0;n.due=Date.now()+STEPS[n.step]*DAY}const u=n.updated;await touch(n);n.updated=u;await putNote(n);draw();return}
+ const n=S.notes.get(S.cur);
+ switch(d.act){
+  case'back':await flush();history.length>1?history.back():go('list/all');break;
+  case'menu':document.body.classList.add('open');break;
+  case'closemenu':document.body.classList.remove('open');break;
+  case'new':{const r=route().split('/');const x=await addNote({para:r[0]==='list'&&PARA[r[1]]?r[1]:'inbox',body:r[1]&&r[1].startsWith('tag:')?'\n\n#'+r[1].slice(4):''});S.mode='edit';go('n/'+x.id);break}
+  case'tpl':{const m=$('#modal');m.innerHTML=`<div class="dlg"><h3>Tạo ghi chú theo mẫu</h3>${Object.keys(TPL).map(k=>`<button class="nav" data-tplk="${esc(k)}">${esc(k)}</button>`).join('')}<div class="row"><button id="dno">Đóng</button></div></div>`;m.classList.add('on');
+   m.onclick=async ev=>{const b=ev.target.closest('[data-tplk],#dno');if(!b)return;m.classList.remove('on');m.onclick=null;m.innerHTML='';if(b.dataset.tplk){const k=b.dataset.tplk;const x=await addNote({title:k+' '+dmy(Date.now()),para:k.startsWith('Dự án')?'project':k.startsWith('Tài liệu')?'resource':'inbox',body:TPL[k].replace('{d}',dmy(Date.now()))});S.mode='edit';go('n/'+x.id)}};break}
+  case'today':today();break;
+  case'mode':await flush();S.mode=S.mode==='edit'?'view':'edit';draw();break;
+  case'pin':if(n){n.pinned=!n.pinned;await touch(n);draw()}break;
+  case'del':if(n){const v=await dialog({title:'Xoá ghi chú này?',text:'“'+(n.title||'(chưa đặt tên)')+'” sẽ bị xoá khỏi máy'+(S.gh?' và khỏi kho GitHub ở lần đồng bộ tới (lịch sử trên GitHub vẫn còn).':'.'),ok:'Xoá',danger:true});if(v){clearTimeout(saveT);saveT=null;await removeNote(n);history.length>1?history.back():go('list/all')}}break;
+  case'sync':if(!S.gh){go('settings');toast('Kết nối kho GitHub trước đã')}else sync();break;
+  case'ghon':connectGh();break;
+  case'ghoff':{const v=await dialog({title:'Ngắt kết nối GitHub?',text:'Ghi chú trên máy và trên GitHub đều được giữ nguyên, chỉ dừng đồng bộ.',ok:'Ngắt'});if(v){S.gh=null;await saveGh();draw()}break}
+  case'pwset':setPassword();break;case'pwoff':offPassword();break;
+  case'lock':await flush();location.reload();break;
+  case'exzip':exportZip();break;case'exjson':exportJson();break;case'imp':$('#impf').click();break;
+ }
+});
+document.addEventListener('change',async e=>{const t=e.target;if(t.type!=='checkbox'||t.dataset.ln==null)return;const n=S.notes.get(t.dataset.tn||S.cur);if(n){await toggleLine(n,+t.dataset.ln);draw()}});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();go('search')}else if(e.key==='Escape'&&S.cur&&!$('#modal').classList.contains('on'))history.back()});
+window.addEventListener('hashchange',draw);
+window.addEventListener('pagehide',()=>{flush()});
+let hid=0;document.addEventListener('visibilitychange',()=>{if(document.hidden){hid=Date.now();flush()}else{if(S.cm&&hid&&Date.now()-hid>5*60e3)location.reload();else if(S.gh&&hid&&Date.now()-hid>60e3)sync(true)}});
+window.addEventListener('online',()=>sync(true));
+
+/* ---------- khởi động ---------- */
+async function seed(){
+ await addNote({id:'seedpara',title:'Phương pháp PARA',para:'resource',body:'Mọi ghi chú thuộc một trong bốn nhóm:\n\n- **Dự án**: việc có mục tiêu và thời hạn, ví dụ một bài phát biểu, một kế hoạch.\n- **Lĩnh vực**: trách nhiệm lâu dài, không có ngày kết thúc.\n- **Tài nguyên**: kiến thức, tài liệu tham khảo, điều đáng nhớ.\n- **Lưu trữ**: việc đã xong, cất đi nhưng vẫn tìm lại được.\n\nÝ mới chưa kịp phân loại thì nằm ở Hộp thư đến.\n\n#phươngpháp'});
+ const a=await addNote({id:'seedstart',title:'Bắt đầu ở đây',para:'resource',pinned:true,body:'Đây là bộ não thứ hai: nơi ghi lại mọi điều đáng nhớ để đầu óc rảnh mà suy nghĩ.\n\n## Bốn bước\n1. **Ghi**: có ý gì ghi ngay vào ô “Ghi nhanh”, chưa cần sắp xếp.\n2. **Xếp**: mỗi tuần dọn Hộp thư đến, chuyển ghi chú vào đúng nhóm. Xem [[Phương pháp PARA]].\n3. **Chắt lọc**: mục “Ôn lại hôm nay” đưa ghi chú cũ quay lại để đọc và rút gọn.\n4. **Dùng**: khi viết bài, chuẩn bị cuộc họp, hãy tìm kiếm và lần theo các liên kết.\n\n## Cách viết\n- Gõ `[[Tên ghi chú]]` để nối hai ghi chú với nhau.\n- Gõ `#thẻ` để gắn thẻ.\n- Gõ `- [ ] Nội dung việc @20/11` để tạo việc có hạn.\n\n## Thử ngay\n- [ ] Ghi một ý vào ô Ghi nhanh\n- [ ] Mở “Hôm nay” để viết nhật ký ngày\n- [ ] Vào Cài đặt để kết nối GitHub và đặt mật khẩu\n\n#phươngpháp'});
+ a.due=Date.now()+30*DAY;await putNote(a);
+}
+async function boot(){
+ await openDB();S.cm=await kvGet('crypto');
+ if(S.cm){
+  $('#lock').classList.add('on');$('#lockp').focus();
+  await new Promise(res=>{$('#lockf').onsubmit=async e=>{e.preventDefault();$('#lockm').textContent='Đang kiểm tra…';const k=await checkPass($('#lockp').value,S.cm);if(k){S.key=k;res()}else{$('#lockm').textContent='Mật khẩu không đúng.';$('#lockp').select()}}});
+  $('#lock').classList.remove('on');$('#lockp').value='';$('#lockm').textContent='';
+ }
+ await loadAll();await loadGh();
+ if(!S.notes.size&&!(await kvGet('seeded'))){await seed();await kvSet('seeded',true)}
+ const ghi=new URLSearchParams(location.search).get('ghi');
+ if(ghi&&ghi.trim()){await capture(ghi.trim());history.replaceState(null,'',location.pathname+location.hash);toast('Đã lưu vào Hộp thư đến')}
+ if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+ if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+ await draw();if(S.gh)sync(true);
+}
+boot().catch(e=>{$('#view').innerHTML='<div class="empty">Không khởi động được: '+esc(e.message||e)+'<br>Hãy mở ứng dụng bằng Safari hoặc Chrome qua địa chỉ https, không dùng chế độ duyệt riêng tư.</div>'});
+window.__brain={S,sync,md,search};
+}
+</script>
+</body>
+</html>
